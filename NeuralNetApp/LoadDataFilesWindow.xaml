@@ -1,0 +1,40 @@
+﻿<Window x:Class="PendleCodeMonkey.NeuralNetApp.LoadDataFilesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PendleCodeMonkey.NeuralNetApp"
+        mc:Ignorable="d"
+        Title="Open Data Files" Height="110" Width="500" WindowStartupLocation="CenterOwner">
+    <Grid Margin="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <CheckBox x:Name="TrainingDataCheckBox" Content="Training Data:" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Top"
+                  IsChecked="{Binding Path=DataContext.TrainingDataSelected}"/>
+        <TextBox x:Name="TrainingDataTextBox" Grid.Column="1" HorizontalAlignment="Stretch" Margin="2" TextWrapping="Wrap"
+                 Text="{Binding TrainingDataFilePath,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" VerticalAlignment="Top"
+                 IsEnabled="{Binding ElementName=TrainingDataCheckBox, Path=IsChecked}"/>
+        <Button x:Name="TrainingDataBrowseButton" Grid.Column="2" Content="..." HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top"
+                IsEnabled="{Binding ElementName=TrainingDataCheckBox, Path=IsChecked}" Click="TrainingDataBrowseButtonClicked"/>
+        <CheckBox x:Name="TestDataCheckBox" Grid.Row="1" Content="Test Data:" HorizontalAlignment="Left" Margin="2" VerticalAlignment="Top"
+                  IsChecked="{Binding Path=DataContext.TestDataSelected}"/>
+        <TextBox x:Name="TestDataTextBox" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="2" TextWrapping="Wrap" Text="" VerticalAlignment="Top"
+                 IsEnabled="{Binding ElementName=TestDataCheckBox, Path=IsChecked}"/>
+        <Button x:Name="TestDataBrowseButton" Grid.Row="1" Grid.Column="2" Content="..." HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top"
+                IsEnabled="{Binding ElementName=TestDataCheckBox, Path=IsChecked}" Click="TestDataBrowseButtonClicked"/>
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button x:Name="OKButton" Content="OK" Margin="0,0,16,0" Width="80" IsDefault="True" Click="OKButtonClicked"/>
+            <Button x:Name="CancelButton" Content="Cancel" Margin="16,0,0,0" Width="80" IsCancel="True"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

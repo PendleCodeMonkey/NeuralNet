@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="PendleCodeMonkey.NeuralNetApp.SymbolPanelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PendleCodeMonkey.NeuralNetApp"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static local:SymbolPanelControl.PreviousPageCmd}"
+                    Executed="PreviousPageCmdExecuted"
+                    CanExecute="PreviousPageCanExecute"/>
+        <CommandBinding Command="{x:Static local:SymbolPanelControl.NextPageCmd}"
+                    Executed="NextPageCmdExecuted"
+                    CanExecute="NextPageCanExecute"/>
+    </UserControl.CommandBindings>
+    <Grid>
+        <Grid.ColumnDefinitions>
+           <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <WrapPanel x:Name="panelWrap" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+        </ScrollViewer>
+
+        <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}" Grid.ColumnSpan="2"
+        DockPanel.Dock="Top" 
+        LastChildFill="False" >
+
+            <StackPanel x:Name="NavigationPanel" Orientation="Horizontal" DockPanel.Dock="Left" HorizontalAlignment="Left">
+                <Button x:Name="PreviousPageButton" FontWeight="Bold" Content="&lt;" Command="{x:Static local:SymbolPanelControl.PreviousPageCmd}"/>
+                <TextBlock x:Name="PageTextBlock" Margin="4" TextWrapping="NoWrap" FontWeight="Bold" Text="" Width="100" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Button x:Name="NextPageButton" FontWeight="Bold" Content="&gt;" Command="{x:Static local:SymbolPanelControl.NextPageCmd}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                <TextBlock x:Name="CorrectlyEvaluatedTextBlock" TextWrapping="NoWrap" FontWeight="Bold" Width="240" Text=" " TextAlignment="Right" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <TextBlock x:Name="TestDataFileName" Margin="20, 4, 4, 4" TextWrapping="NoWrap" FontWeight="Bold" Text=" " TextAlignment="Center" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+
+        </DockPanel>
+
+    </Grid>
+</UserControl>

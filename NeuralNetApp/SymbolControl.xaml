@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="PendleCodeMonkey.NeuralNetApp.SymbolControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PendleCodeMonkey.NeuralNetApp"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="64">
+    <UserControl.Resources>
+        <local:LabelsToBrushConverter x:Key="LabelsToBrushConverter"/>
+        <local:EvaluatedLabelToTextConverter x:Key="EvaluatedLabelToTextConverter"/>
+    </UserControl.Resources>
+    <Grid x:Name="SymbolLabellingGrid" Margin="4" TextBlock.FontSize="18">
+        <Grid.Background>
+            <MultiBinding Converter="{StaticResource LabelsToBrushConverter }">
+                <Binding Path="ActualLabel"/>
+                <Binding Path="EvaluatedLabel"/>
+            </MultiBinding>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="imgSymbol" HorizontalAlignment="Left" Height="56" VerticalAlignment="Top" Width="56" Grid.ColumnSpan="2"/>
+        <DockPanel x:Name="LabelPanel" Grid.Row="1" Grid.ColumnSpan="2" LastChildFill="False">
+            <TextBlock x:Name="txtActualValue" DockPanel.Dock="Left" Width="28" TextAlignment="Center" HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" Text="{Binding ActualLabel}" VerticalAlignment="Center" FontWeight="Bold"/>
+            <TextBlock x:Name="txtEvaluatedValue" DockPanel.Dock="Right" Width="28" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Column="1" TextWrapping="Wrap" Text="{Binding Path=EvaluatedLabel, Converter={StaticResource EvaluatedLabelToTextConverter}}" VerticalAlignment="Center" FontWeight="Bold"/>
+        </DockPanel>
+
+    </Grid>
+</UserControl>

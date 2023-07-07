@@ -1,0 +1,49 @@
+﻿<Window x:Class="PendleCodeMonkey.NeuralNetApp.UserDrawnSymbol"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PendleCodeMonkey.NeuralNetApp"
+        mc:Ignorable="d"
+        Title="Identify User-drawn Symbols" Height="450" Width="800" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Grid Background="Silver"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Left">
+                <InkCanvas x:Name="inkCanvas" Grid.Column="1" Grid.Row="1" Width="280" Height="280" Margin="6" x:FieldModifier="public" Background="White" Opacity="1" EditingMode="Ink" ForceCursor="True" Cursor="Pen" >
+                    <InkCanvas.DefaultDrawingAttributes>
+                        <DrawingAttributes Color="Black" Width="32" Height="32" />
+                    </InkCanvas.DefaultDrawingAttributes>
+                </InkCanvas>
+                <StackPanel x:Name="drawToolPanel" Orientation="Horizontal" Margin="6">
+                    <Button x:Name="IdentifyButton" Content="Identify" Margin="0" Padding="12,4,12,4" Click="CreateBitmapButtonClicked"/>
+                    <Button x:Name="ClearCanvasButton" Content="Clear" Margin="12,0,0,0" Padding="12,4,12,4" Click="ClearButtonClicked"/>
+                    <Label Content="Brush Size:" Margin="20,0,0,0"/>
+                    <ComboBox x:Name="BrushSizeComboBox" SelectionChanged="BrushSizeComboBox_SelectionChanged">
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ScrollViewer Background="White" Margin="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <WrapPanel x:Name="symbolPanel" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                    </ScrollViewer>
+                <DockPanel Grid.Row="1" LastChildFill="False" Margin="6">
+                    <Button x:Name="ClearIdentifiedPanel" DockPanel.Dock="Left" Content="Clear" Margin="0" Padding="12,4,12,4" Click="ClearIdentifiedPanelButtonClicked"/>
+                    <Button x:Name="CloseWindow" DockPanel.Dock="Right" Content="Close" Margin="12,0,0,0" Padding="12,4,12,4" Click="CloseButtonClicked"/>
+
+                </DockPanel>
+            </Grid>
+        </DockPanel>
+        
+        
+
+    </Grid>
+</Window>

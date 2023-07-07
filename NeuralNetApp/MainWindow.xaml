@@ -1,0 +1,188 @@
+﻿<Window x:Class="PendleCodeMonkey.NeuralNetApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PendleCodeMonkey.NeuralNetApp"
+        mc:Ignorable="d"
+        Title="PCM Neural Net" Height="450" Width="800" Loaded="Window_Loaded" Closing="Window_Closing">
+    <Window.Resources>
+        <ControlTemplate x:Key="ValidationTemplate">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <Grid Width="14" Height="14">
+                        <Ellipse Width="14" Height="14" 
+                            Fill="Red" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                        </Ellipse>
+                        <TextBlock Foreground="White" FontWeight="Heavy" 
+                            FontSize="8" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" TextAlignment="Center"
+                           ToolTip="{Binding ElementName=ErrorAdorner, 
+                           Path=AdornedElement.(Validation.Errors)/ErrorContent}"
+                       >!</TextBlock>
+                    </Grid>
+                </StackPanel>
+                <AdornedElementPlaceholder x:Name="ErrorAdorner" ></AdornedElementPlaceholder>
+            </DockPanel>
+        </ControlTemplate>
+
+        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+              Value="{Binding RelativeSource={RelativeSource Self},
+                              Path=(Validation.Errors)/ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.LoadDataFilesCmd}"
+                    Executed="LoadDataFilesCmdExecuted"
+                    CanExecute="LoadDataFilesCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.LoadTrainingDataCmd}"
+                    Executed="LoadTrainingDataCmdExecuted"
+                    CanExecute="LoadTrainingDataCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.SaveTrainingDataCmd}"
+                    Executed="SaveTrainingDataCmdExecuted"
+                    CanExecute="SaveTrainingDataCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ExitCmd}"
+                    Executed="ExitCmdExecuted"
+                    CanExecute="ExitCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.TrainNetworkCmd}"
+                    Executed="TrainNetworkCmdExecuted"
+                    CanExecute="TrainNetworkCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.CancelTrainingCmd}"
+                    Executed="CancelTrainingCmdExecuted"
+                    CanExecute="CancelTrainingCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.IdentifyUserDrawnSymbolsCmd}"
+                    Executed="IdentifyUserDrawnSymbolsCmdExecuted"
+                    CanExecute="IdentifyUserDrawnSymbolsCanExecute"/>
+    </Window.CommandBindings>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open Data Files..." Command="{x:Static local:MainWindow.LoadDataFilesCmd}"/>
+                <MenuItem Header="_Load Training Results..." Command="{x:Static local:MainWindow.LoadTrainingDataCmd}"/>
+                <MenuItem Header="_Save Training Results..." Command="{x:Static local:MainWindow.SaveTrainingDataCmd}"/>
+                <Separator />
+                <MenuItem Header="_Exit" Command="{x:Static local:MainWindow.ExitCmd}"/>
+            </MenuItem>
+            <MenuItem Header="_Training">
+                <MenuItem Header="_Train Network" Command="{x:Static local:MainWindow.TrainNetworkCmd}"/>
+                <MenuItem Header="_Cancel Training" Command="{x:Static local:MainWindow.CancelTrainingCmd}"/>
+            </MenuItem>
+            <MenuItem Header="_Operations">
+                <MenuItem Header="_Identify User-drawn Symbols..." Command="{x:Static local:MainWindow.IdentifyUserDrawnSymbolsCmd}"/>
+            </MenuItem>
+        </Menu>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="220" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem x:Name="StatusTextBarItem">
+                <TextBlock x:Name="StatusTextBlock" HorizontalAlignment="Stretch" FontWeight="Bold" FontSize="18" TextWrapping="NoWrap" Text="Ready" VerticalAlignment="Center"/>
+            </StatusBarItem>
+            <Separator Grid.Column="1"/>
+            <StatusBarItem Grid.Column="2">
+                <Button x:Name="CancelButton" Content="Cancel" Margin="1" Command="{x:Static local:MainWindow.CancelTrainingCmd}"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="3">
+                <ProgressBar x:Name="progress" HorizontalAlignment="Left" Height="16" Width="140" Minimum="0" Maximum="100"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="4">
+                <TextBlock x:Name="RemainingTimeTextBlock" HorizontalAlignment="Stretch" FontWeight="Bold" TextWrapping="NoWrap" Text="" VerticalAlignment="Center"/>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid x:Name="mainGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="4"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="160"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Rectangle Grid.Row="1" Grid.ColumnSpan="3" Fill="DarkGray"/>
+            <local:SymbolPanelControl x:Name="symbolPanelCtrl" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Stretch"/>
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <GroupBox Header="Training Parameters" Grid.ColumnSpan="1" Margin="24,24,8,8">
+                    <Grid Margin="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="Number of epochs:" HorizontalAlignment="Left" Margin="0, 0, 12, 0" VerticalAlignment="Center"/>
+                        <TextBox x:Name="NumEpochs" Grid.Column="1" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" VerticalAlignment="Center"
+                                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+                                 Style="{StaticResource TextBoxInError}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="NumberOfEpochs"
+                                    UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <local:IntegerRangeRule Min="1" Max="100"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <Label Content="Mini-batch size:" HorizontalAlignment="Left" Margin="0, 0, 12, 0" Grid.Row="1" VerticalAlignment="Top"/>
+                        <TextBox x:Name="MiniBatchSize" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" VerticalAlignment="Center"
+                                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+                                 Style="{StaticResource TextBoxInError}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="MiniBatchSize"
+                                    UpdateSourceTrigger="LostFocus" >
+                                    <Binding.ValidationRules>
+                                        <local:IntegerRangeRule Min="5" Max="100"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <Label Content="Learning rate:" HorizontalAlignment="Left" Margin="0, 0, 12, 0" Grid.Row="2" VerticalAlignment="Top"/>
+                        <TextBox x:Name="LearningRate" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Margin="0" TextWrapping="Wrap" VerticalAlignment="Center"
+                                 Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
+                                 Style="{StaticResource TextBoxInError}" Width="100">
+                            <TextBox.Text>
+                                <Binding Path="LearningRate"
+                                    UpdateSourceTrigger="LostFocus"
+                                    StringFormat='{}{0:F2}'>
+                                    <Binding.ValidationRules>
+                                        <local:FloatRangeRule Min="0.1" Max="100.0"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
